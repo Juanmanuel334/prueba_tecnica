@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransRail - Descubre Nuestros Trayectos</title>
+    <title>TrainsLine Descubre Nuestros Trayectos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -23,7 +23,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-train me-2"></i>TrainLine
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -38,7 +38,7 @@
                                         href="{{ url('/dashboard') }}"
                                         class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
-                                        Dashboard
+                                    {{ Auth::user()->name }}
                                     </a>
                                 @else
 
@@ -68,25 +68,27 @@
                         <label class="form-label text-dark">Origen</label>
                         <select class="form-select">
                             <option selected>Selecciona origen...</option>
-                            <option>Madrid</option>
-                            <option>Barcelona</option>
-                            <option>Valencia</option>
-                            <option>Sevilla</option>
-                        </select>
+                            @foreach($origenes as $origen)
+                            <option value="{{ $origen }}" {{ request('origen') == $origen ? 'selected' : '' }} >
+                                {{ $origen }}
+                            </option>
+                        @endforeach
+                    </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label text-dark">Destino</label>
                         <select class="form-select">
                             <option selected>Selecciona destino...</option>
-                            <option>Madrid</option>
-                            <option>Barcelona</option>
-                            <option>Valencia</option>
-                            <option>Sevilla</option>
-                        </select>
+                            @foreach($destinos as $destino)
+                            <option value="{{ $destino }}" {{ request('destino') == $destino ? 'selected' : '' }} >
+                                {{ $destino }}
+                            </option>
+                        @endforeach
+                    </select>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label text-dark">Fecha</label>
-                        <input type="date" class="form-control">
+                        <input type="date" name="fecha" id="fecha" class="form-control" value="{{ request('fecha') }} "required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label text-dark">Pasajeros</label>
@@ -114,31 +116,35 @@
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary">Más Rápidos</button>
-                        <button type="button" class="btn btn-outline-primary">Más Baratos</button>
-                        <button type="button" class="btn btn-outline-primary">Mejor Valorados</button>
+                        <a href="{{ route('welcome', array_merge(request()->query(), ['orden' => 'rapido'])) }}"
+                            class="btn btn-outline-primary {{ request('orden') == 'rapido' ? 'active' : '' }}">Mas Rapidos</a>
+
+                            <a href="{{ route('welcome', array_merge(request()->query(), ['orden' => 'barato'])) }}"
+                                class="btn btn-outline-primary {{ request('orden') == 'barato' ? 'active' : '' }}">Mas Baratos</a>
                     </div>
                 </div>
             </div>
 
             <!-- Lista de Trayectos -->
             <div class="row g-4">
-                <!-- Trayecto 1 -->
+               <!-- Trayecto 1 -->
+               @foreach($trayectos as $trayecto)
                 <div class="col-md-6">
+
                     <div class="card route-card h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Madrid - Barcelona</h5>
+
+                                <h5 class="card-title mb-0">{{ $trayecto->origen }}-{{ $trayecto->destino}}</h5>
                                 <span class="badge bg-success">Disponible</span>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-6">
-                                    <p class="mb-1"><i class="fas fa-clock me-2"></i>Duración: 2h 30min</p>
-                                    <p class="mb-1"><i class="fas fa-train me-2"></i>AVE</p>
-                                    <p class="mb-1"><i class="fas fa-calendar me-2"></i>Lun-Dom</p>
+                                    <p class="mb-1"><i class="fas fa-clock me-2"></i>Tiempo Aproximado: {{ $trayecto->tiempo_aprox }}</p>
+                                    <p class="mb-1"><i class="fas fa-calendar me-2"></i>{{ $trayecto->fecha}}</p>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <h4 class="text-primary mb-2">89,90 €</h4>
+                                    <h4 class="text-primary mb-2"> €{{ $trayecto->precio}}</h4>
                                     <small class="text-muted">por persona</small>
                                 </div>
                             </div>
@@ -148,104 +154,12 @@
                                     <i class="fas fa-utensils me-2"></i>
                                     <i class="fas fa-wheelchair me-2"></i>
                                 </div>
-                                <a href="#" class="btn btn-primary">Reservar</a>
+                                <<a href="{{ route('trayectos.show', $trayecto->id_trayecto) }}" class="btn btn-primary">Ver Detalles</a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Trayecto 2 -->
-                <div class="col-md-6">
-                    <div class="card route-card h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Madrid - Valencia</h5>
-                                <span class="badge bg-warning">Últimos asientos</span>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <p class="mb-1"><i class="fas fa-clock me-2"></i>Duración: 1h 45min</p>
-                                    <p class="mb-1"><i class="fas fa-train me-2"></i>AVE</p>
-                                    <p class="mb-1"><i class="fas fa-calendar me-2"></i>Lun-Vie</p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <h4 class="text-primary mb-2">59,90 €</h4>
-                                    <small class="text-muted">por persona</small>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-wifi me-2"></i>
-                                    <i class="fas fa-utensils me-2"></i>
-                                    <i class="fas fa-wheelchair me-2"></i>
-                                </div>
-                                <a href="#" class="btn btn-primary">Reservar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trayecto 3 -->
-                <div class="col-md-6">
-                    <div class="card route-card h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Barcelona - Sevilla</h5>
-                                <span class="badge bg-info">Oferta</span>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <p class="mb-1"><i class="fas fa-clock me-2"></i>Duración: 5h 30min</p>
-                                    <p class="mb-1"><i class="fas fa-train me-2"></i>AVE</p>
-                                    <p class="mb-1"><i class="fas fa-calendar me-2"></i>Mar-Dom</p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <h4 class="text-primary mb-2">129,90 €</h4>
-                                    <small class="text-muted">por persona</small>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-wifi me-2"></i>
-                                    <i class="fas fa-utensils me-2"></i>
-                                    <i class="fas fa-wheelchair me-2"></i>
-                                </div>
-                                <a href="#" class="btn btn-primary">Reservar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trayecto 4 -->
-                <div class="col-md-6">
-                    <div class="card route-card h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Valencia - Barcelona</h5>
-                                <span class="badge bg-success">Disponible</span>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <p class="mb-1"><i class="fas fa-clock me-2"></i>Duración: 3h 15min</p>
-                                    <p class="mb-1"><i class="fas fa-train me-2"></i>AVE</p>
-                                    <p class="mb-1"><i class="fas fa-calendar me-2"></i>Lun-Dom</p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <h4 class="text-primary mb-2">79,90 €</h4>
-                                    <small class="text-muted">por persona</small>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-wifi me-2"></i>
-                                    <i class="fas fa-utensils me-2"></i>
-                                    <i class="fas fa-wheelchair me-2"></i>
-                                </div>
-                                <a href="#" class="btn btn-primary">Reservar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
             <!-- Paginación -->
@@ -298,5 +212,23 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let fechasDisponibles = @json($fechasDisponibles); // Pasamos las fechas disponibles desde Laravel a JavaScript
+            let inputFecha = document.getElementById("fecha");
+
+            inputFecha.addEventListener("input", function () {
+                if (!fechasDisponibles.includes(this.value)) {
+                    alert("No hay trayectos disponibles para esta fecha.");
+                    this.value = ""; // Limpia el campo si la fecha no está disponible
+                }
+            });
+
+            // Opcional: Restringir fechas disponibles en el calendario
+            inputFecha.setAttribute("min", fechasDisponibles[0]); // Primera fecha disponible
+            inputFecha.setAttribute("max", fechasDisponibles[fechasDisponibles.length - 1]); // Última fecha disponible
+        });
+    </script>
+
 </body>
 </html>

@@ -23,10 +23,10 @@ class UserRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($userId)
+                Rule::unique('users')->ignore($userId),
+                'role'
             ],
-            'role' => ['required', Rule::in(['admin', 'user'])],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
+
         ];
 
         // Solo requerimos password en creación o si se proporciona en actualización
@@ -48,10 +48,6 @@ class UserRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'Las contraseñas no coinciden',
-            'role.required' => 'El rol es obligatorio',
-            'role.in' => 'El rol seleccionado no es válido',
-            'status.required' => 'El estado es obligatorio',
-            'status.in' => 'El estado seleccionado no es válido'
         ];
     }
 }

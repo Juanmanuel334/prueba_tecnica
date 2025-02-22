@@ -4,11 +4,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrayectoController;
 use App\Http\Controllers\PrecioController;
-use App\Models\Empresa;
-use App\Models\Precio;
-use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserRoleController;
+use App\Models\Trayecto;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,15 +30,7 @@ require __DIR__.'/auth.php';
     // Users
 
 
-    Route::middleware(['auth', AdminMiddleware::class])->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::delete('/users/show', [UserController::class, 'show'])->name('users.show');
-    });
+
 
  // Modulo empresas
     Route::resource('empresas', EmpresaController::class)->middleware('auth');
@@ -53,9 +46,8 @@ require __DIR__.'/auth.php';
     Route::delete('/empresas/{id_empresa}', [EmpresaController::class, 'destroy'])->middleware('auth')->name('empresas.destroy')->middleware('auth');
 
  // modulo trayectos
-    Route::resource('trayectos', TrayectoController::class);
-    Route::get('trayectos', [TrayectoController::class, 'index'])->name('trayectos.index')->middleware('auth');
-
+    Route::resource('trayectos',TrayectoController::class);
+    Route::get('/trayectos', [TrayectoController::class, 'index'])->name('trayectos.index')->middleware('auth');
     Route::post('trayectos/create', [TrayectoController::class, 'store'])->name('trayectos.store')->middleware('auth');
     Route::get('trayectos/create', [TrayectoController::class, 'create'])->name('trayectos.create')->middleware('auth');
 
@@ -69,9 +61,11 @@ require __DIR__.'/auth.php';
  // modulo precio
     Route::resource('precios', PrecioController::class)->middleware('auth');
     Route::resource('precios', PrecioController::class);
+    Route::resource('/',HomeController::class);
+
 
     Route::middleware(['auth'])->group(function () {
         Route::resource('users', UserController::class);
-        Route::post('/users/{user}/change-role', [UserController::class, 'changeRole'])->name('users.changeRole');
-
     });
+    Route::get('/', [TrayectoController::class, 'ind'])->name('welcome');
+

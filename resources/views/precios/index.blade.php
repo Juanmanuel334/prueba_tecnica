@@ -3,7 +3,6 @@
 @section('content')
 <div class="container mt-4">
     <h1 class="mb-4">Precios</h1>
-    <a href="{{ route('precios.create') }}" class="btn btn-primary mb-3">Crear Precio</a>
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -12,22 +11,18 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Acciones</th>
+                <th style="text-align:center">ID</th>
+                <th style="text-align:center">Destino</th>
+                <th style="text-align:center">Precio</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($precios as $precio)
                 <tr>
-                    <td>{{ $precio->precio }}</td>
-                    <td>
-                        <a class="btn btn-info btn-sm">Ver</a>
-                        <a class="btn btn-warning btn-sm">Editar</a>
+                    <td style="text-align:center">{{ $precio->id_trayecto}}</td>
+                        <td style="text-align:center">{{ $precio->destino}}-{{ $precio->destino}}</td>
+                        <td style="text-align:center">€ {{ $precio->precio }}</td>
 
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
-                    </td>
                 </tr>
                 @empty
                 <tr>

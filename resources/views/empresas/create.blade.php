@@ -29,6 +29,8 @@
                             <label for="descripcion_empresa" class="form-label">Descripción de la empresa</label>
                             <input type="text" class="form-control" id="descripcion_empresa" name="descripcion_empresa" value="{{ old('descripcion_empresa') }}" required>
                         </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ route('empresas.index') }}" class="btn btn-secondary">Cancelar</a>
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">Guardar Empresa</button>
                         </div>

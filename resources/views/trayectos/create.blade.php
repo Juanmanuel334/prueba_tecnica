@@ -41,20 +41,24 @@
                         </div>
                         <div class="mb-3">
                             <label for="hora_salida" class="form-label">Hora de salida</label>
-                            <input type="text" class="form-control" id="hora_salida" name="hora_salida" value="{{ old('hora_salida') }}" required>
+                            <input type="time" class="form-control" id="hora_salida" name="hora_salida" value="{{ old('hora_salida') }}" required>
+
+
                         </div>
                         <div class="mb-3">
                             <label for="hora_llegada" class="form-label">Hora de llegada estimada</label>
-                            <input type="text" class="form-control" id="hora_llegada" name="hora_llegada" value="{{ old('hora_llegada') }}" required step="60">
+                            <input type="time" class="form-control" id="hora_llegada" name="hora_llegada" value="{{ old('hora_llegada') }}" required step="60">
                         </div>
                         <div class="mb-3">
                             <label for="fecha" class="form-label">Fecha</label>
-                            <input type="text" class="form-control" id="fecha" name="fecha" value="{{ old('fecha') }}" required  >
+                            <input type="date" class="form-control" id="fecha" name="fecha" value="{{ old('fecha') }}" required  >
                         </div>
                         <div class="mb-3">
                             <label for="precio" class="form-label">Precio</label>
-                            <input type="text" class="form-control" id="precio" name="precio" value="{{ old('precio') }}" required  >
+                            <input type="number" class="form-control" id="precio" name="precio" value="{{ old('precio') }}" required  >
                         </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ route('trayectos.index') }}" class="btn btn-secondary">Cancelar</a>
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">Guardar Trayecto</button>
                         </div>

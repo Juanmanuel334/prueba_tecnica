@@ -1,77 +1,71 @@
 @extends('layouts.app')
 
-@section('title', 'Lista de Usuarios')
-
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Lista de Usuarios</h2>
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>Gestión de Usuarios</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ route('users.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Crear Usuario
+            </a>
+        </div>
+    </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($users as $user)
-                <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>
-                        <span class="badge bg-{{ $user->rol == 'admin' ? 'danger' : 'primary' }}" id="role-badge-{{ $user->id }}">
-                            {{ $user->rol }}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-info change-role-btn"
-                            data-user-id="{{ $user->id }}">
-                            Cambiar Rol
-                        </button>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $user)
+                            <tr>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ ucfirst($user->role) }}</span>
+                                </td>
 
-    {{ $users->links() }}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                                <i class="fas fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                {{ $users->links() }}
+            </div>
+        </div>
+    </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".change-role-btn").forEach(button => {
-            button.addEventListener("click", function () {
-                let userId = this.getAttribute("data-user-id");
-                let url = `/users/${userId}/change-role`;
-
-                fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        let badge = document.getElementById(`role-badge-${userId}`);
-                        badge.innerText = data.newRole;
-                        badge.className = `badge bg-${data.newRole === 'admin' ? 'danger' : 'primary'}`;
-                        alert(data.message);
-                    }
-                })
-                .catch(error => console.error("Error:", error));
-            });
-        });
-    });
-</script>
-
 @endsection

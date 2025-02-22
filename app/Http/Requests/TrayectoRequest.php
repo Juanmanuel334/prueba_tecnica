@@ -19,8 +19,6 @@ class TrayectoRequest extends FormRequest
             'destino'=> 'required|string|max:255',
             'kms'=> 'required|int|max:10',
             'tiempo_aprox'=> 'required|string|max:255',
-            'hora_salida'=> 'required|date_format:h:i A',
-            'hora_llegada'=> 'required|date_format:h:i A',
             'fecha'=> 'required|date',
             'precio'=> 'required|string|max:255'
         ];

@@ -47,7 +47,7 @@
                     <td style="text-align: center">{{ $trayecto->hora_salida}}</td>
                     <td style="text-align: center">{{ $trayecto->hora_llegada}}</td>
                     <td style="text-align: center">{{ $trayecto->fecha}}</td>
-                    <td style="text-align: center">{{ $trayecto->precio}}</td>
+                    <td style="text-align: center">€ {{ $trayecto->precio}}</td>
 
                     <td style="text-align: center">
                         <a href="{{ route('trayectos.edit', $trayecto->id_trayecto) }}" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
@@ -62,7 +62,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="10" class="text-center">No hay empresas registradas</td>
+                    <td colspan="10" class="text-center">No hay Trayectos registrados</td>
                 </tr>
         @endforelse
         </tbody>

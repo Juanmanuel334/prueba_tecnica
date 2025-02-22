@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->paginate(10);
+        $users = User::all();
+        $users = User::query()->paginate(10);
         return view('users.index', compact('users'));
+
     }
 
     public function create()
@@ -27,7 +30,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => $request->rol,
+            'role' => $request->role,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
@@ -38,12 +41,13 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
+
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->rol,
+            'role'=>$request->role,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
@@ -53,18 +57,6 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente.');
+
     }
-
-    public function changeRole(User $user)
-{
-    // Alternar entre admin y user
-    $user->rol = $user->rol === 'admin' ? 'user' : 'admin';
-    $user->save();
-
-    return response()->json([
-        'success' => true,
-        'newRole' => $user->rol,
-        'message' => 'Rol actualizado a ' . ucfirst($user->rol),
-    ]);
-}
 }
